@@ -1,0 +1,6 @@
+{
+  "name": "out-test-pipeline",
+  "version": "1.0.0",
+  "description": "Pipeline completo de testes de API, E2E e Performance",
+  "private": true
+}

@@ -1,35 +1,29 @@
-# Pipeline: Completo (Playwright → K6)
-
-## Ordem de execução
-1. **Playwright API** — Testes de API (checkout `out-e2e-playwright`)
-2. **Playwright E2E** — Testes E2E (checkout `out-e2e-playwright`)
-3. **K6** — Testes de performance (checkout `out-performance-k6`)
-
-> **WebdriverIO** (out-e2e-webdriverIO) não está no pipeline devido à config de ambiente Android. Execução apenas local.
+# Pipeline: API → E2E → K6
 
 ## Onde o pipeline está
 
-O arquivo `pipeline.yml` está em **out-test-pipeline**. Cada job faz checkout do repositório correspondente e executa:
-- API   - Integrated Test
-- E2E   - E2E Test
-- K6    - Performance Test
+O pipeline completo roda no repositório **out-test-pipeline**.  
+Ele orquestra os testes de dois outros repositórios na mesma organização.
+
+## Ordem de execução
+
+1. **playwright-api** — Testes de API (out-e2e-playwright)
+2. **playwright-e2e** — Testes E2E (out-e2e-playwright)
+3. **k6** — Testes de performance (out-performance-k6)
 
 ## Repositórios necessários
 
-Na mesma organização:
-- `/out-test-pipeline` — orquestrador + Playwright (API + E2E)
-- `/out-performance-k6` — K6 (checkout em `k6/` no pipeline)
-- `/out-e2e-webdriverIO` — fora do pipeline (Android)
+Os 3 repositórios precisam existir na mesma organização:
 
-## Relatórios por projeto
+- `SEU_ORG/out-test-pipeline` (este — orquestrador)
+- `SEU_ORG/out-e2e-playwright`
+- `SEU_ORG/out-performance-k6`
 
-| Projeto   | Comando de teste      | Caminho dos artifacts |
-|-----------|-----------------------|------------------------|
-| Playwright | `npm run playwright:api`, `npm run playwright:e2e` | `playwright-report/` |
-| K6        | `npm run test-smoke`  | `k6/src/reports/`      |
+## Disparo
 
-## Secrets
+- **workflow_dispatch** — Execução manual em Actions
+- **push / PR** na branch `main` de out-test-pipeline
 
-- `BASE_URL_TEST` (opcional): URL da API para K6. Se não for definido, usa JSONPlaceholder.
+## Testes apenas API + E2E
 
-
+Para rodar **somente** os testes de API e E2E (sem K6), use o workflow **Playwright API + E2E** no repositório **out-e2e-playwright**.

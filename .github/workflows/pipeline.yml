@@ -1,4 +1,11 @@
-name: Pipeline Completo
+# Pipeline completo: Playwright API → Playwright E2E → K6
+# Roda no projeto out-test-pipeline. Orquestra os repositórios:
+# - out-e2e-playwright (API + E2E)
+# - out-performance-k6 (Performance)
+#
+# Disparo: workflow_dispatch ou push/PR na main.
+
+name: Pipeline API → E2E → K6
 
 on:
   workflow_dispatch:
@@ -27,7 +34,7 @@ jobs:
           cache: npm
           cache-dependency-path: playwright/package-lock.json
 
-      - name: Instalar dependências
+      - name: Instalar dependências Playwright
         working-directory: playwright
         run: npm ci || npm install
 
@@ -41,13 +48,14 @@ jobs:
         env:
           API_POSTS_BASE_URL: ${{ secrets.API_POSTS_BASE_URL || 'https://jsonplaceholder.typicode.com' }}
 
-      - name: Upload artifacts (falha)
-        if: failure()
+      - name: Upload relatório Playwright
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-api-report
           path: playwright/playwright-report/
-          if-no-files-found: ignore
+          retention-days: 14
+          if-no-files-found: warn
 
   playwright-e2e:
     name: E2E (Playwright)
@@ -66,7 +74,7 @@ jobs:
           cache: npm
           cache-dependency-path: playwright/package-lock.json
 
-      - name: Instalar dependências
+      - name: Instalar dependências Playwright
         working-directory: playwright
         run: npm ci || npm install
 
@@ -82,13 +90,14 @@ jobs:
           USUARIO: ${{ secrets.USUARIO || 'tomsmith' }}
           SENHA: ${{ secrets.SENHA || 'SuperSecretPassword!' }}
 
-      - name: Upload artifacts (falha)
-        if: failure()
+      - name: Upload relatório Playwright
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-e2e-report
           path: playwright/playwright-report/
-          if-no-files-found: ignore
+          retention-days: 14
+          if-no-files-found: warn
 
   k6:
     name: Performance (K6)
@@ -125,8 +134,10 @@ jobs:
           npm run test-smoke
 
       - name: Upload relatório K6
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: k6-report
           path: k6/src/reports/
-          if-no-files-found: ignore
+          retention-days: 14
+          if-no-files-found: warn
