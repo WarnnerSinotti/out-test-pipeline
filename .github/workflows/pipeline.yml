@@ -1,11 +1,4 @@
-# Pipeline completo: Playwright API → Playwright E2E → K6
-# Roda no projeto out-test-pipeline. Orquestra os repositórios:
-# - out-e2e-playwright (API + E2E)
-# - out-performance-k6 (Performance)
-#
-# Disparo: workflow_dispatch ou push/PR na main.
-
-name: Pipeline API → E2E → K6
+name: Pipeline Completo
 
 on:
   workflow_dispatch:

@@ -1,6 +1,4 @@
-# Pipeline: API → E2E → K6
-
-## Onde o pipeline está
+# Pipeline Completo
 
 O pipeline completo roda no repositório **out-test-pipeline**.  
 Ele orquestra os testes de dois outros repositórios na mesma organização.
