@@ -6,7 +6,7 @@ Pipeline unificado de testes CI/CD que orquestra a execução dos projetos OUT e
 
 ## Descrição
 
-Este projeto centraliza e executa os testes em um pipeline único. O objetivo é unificar a execução de testes de API (Playwright), E2E (Playwright) e performance (K6) em um mesmo fluxo de CI/CD. Os testes dos projetos **out-e2e-playwright** e **out-performance-k6** serão gradualmente unificados neste repositório.
+Este projeto centraliza e executa os testes em um pipeline único. O pipeline faz checkout dos repositórios **out-e2e-playwright** e **out-performance-k6** para rodar, em sequência: testes de API, E2E e performance.
 
 > **Nota:** O projeto **out-e2e-webdriverIO** não integra o pipeline devido à configuração necessária de ambiente Android. Deixando este projeto para integração no futuro.
 
@@ -16,17 +16,11 @@ Este projeto centraliza e executa os testes em um pipeline único. O objetivo é
 
 ```
 out-test-pipeline/
-├── .github/
-│   └── workflows/
-│       ├── pipeline.yml    # Definição do pipeline CI/CD
-│       └── PIPELINE.md     # Documentação detalhada do pipeline
+├── .github/workflows/
+│   ├── pipeline.yml    # Definição do pipeline CI/CD
+│   └── PIPELINE.md     # Documentação detalhada
 ├── README.md
-out-e2e-playwright/
-├── tests/
-│   └── api/
-│   └── e2e/
-out-performance-k6/
-├── tests/
+└── ANALISE.md          # Análise da estrutura dos repos
 
 
 ```
@@ -62,13 +56,11 @@ nvm install 20
 nvm use 20
 ```
 
-### Este repositório (Playwright)
+### out-e2e-playwright (Playwright)
 
 ```bash
+cd out-e2e-playwright  # ou clone o repositório
 npm ci
-# ou
-npm install
-
 npx playwright install --with-deps chromium
 ```
 
@@ -105,6 +97,7 @@ O pipeline é disparado em:
 #### Testes Playwright (API)
 
 ```bash
+cd out-e2e-playwright
 npm run playwright:api
 # Relatório em: playwright-report/
 ```
@@ -115,6 +108,7 @@ Variáveis de ambiente (opcionais):
 #### Testes Playwright (E2E)
 
 ```bash
+cd out-e2e-playwright
 npm run playwright:e2e
 # Relatório em: playwright-report/
 ```
@@ -142,8 +136,8 @@ Variável de ambiente (opcional):
 
 | Job        | Artifact              | Caminho              |
 |------------|-----------------------|----------------------|
-| Playwright API | playwright-api-report   | `playwright-report/` |
-| Playwright E2E | playwright-e2e-report  | `playwright-report/` |
+| Playwright API | playwright-api-report   | `playwright/playwright-report/` |
+| Playwright E2E | playwright-e2e-report  | `playwright/playwright-report/` |
 | K6         | k6-report             | `k6/src/reports/`    |
 
 Em caso de falha no Playwright, o relatório é enviado como artifact no GitHub Actions.

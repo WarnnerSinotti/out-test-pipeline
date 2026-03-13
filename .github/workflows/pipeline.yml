@@ -17,19 +17,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPO_ORG }}/out-e2e-playwright
+          path: playwright
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: playwright/package-lock.json
 
       - name: Instalar dependências
+        working-directory: playwright
         run: npm ci || npm install
 
       - name: Instalar navegadores Playwright
+        working-directory: playwright
         run: npx playwright install --with-deps chromium
 
       - name: Rodar testes de API
+        working-directory: playwright
         run: npm run playwright:api
         env:
           API_POSTS_BASE_URL: ${{ secrets.API_POSTS_BASE_URL || 'https://jsonplaceholder.typicode.com' }}
@@ -39,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-api-report
-          path: playwright-report/
+          path: playwright/playwright-report/
           if-no-files-found: ignore
 
   playwright-e2e:
@@ -49,19 +56,26 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: ${{ env.REPO_ORG }}/out-e2e-playwright
+          path: playwright
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: playwright/package-lock.json
 
       - name: Instalar dependências
+        working-directory: playwright
         run: npm ci || npm install
 
       - name: Instalar navegadores Playwright
+        working-directory: playwright
         run: npx playwright install --with-deps chromium
 
       - name: Rodar testes E2E
+        working-directory: playwright
         run: npm run playwright:e2e
         env:
           BASE_URL: ${{ secrets.BASE_URL || 'https://the-internet.herokuapp.com' }}
@@ -73,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-e2e-report
-          path: playwright-report/
+          path: playwright/playwright-report/
           if-no-files-found: ignore
 
   k6:
@@ -115,3 +129,4 @@ jobs:
         with:
           name: k6-report
           path: k6/src/reports/
+          if-no-files-found: ignore

@@ -1,15 +1,15 @@
 # Pipeline: Completo (Playwright → K6)
 
 ## Ordem de execução
-1. **Playwright API** — Testes de API (out-test-pipeline)
-2. **Playwright E2E** — Testes E2E (out-test-pipeline)
-3. **K6** — Testes de performance (out-performance-k6)
+1. **Playwright API** — Testes de API (checkout `out-e2e-playwright`)
+2. **Playwright E2E** — Testes E2E (checkout `out-e2e-playwright`)
+3. **K6** — Testes de performance (checkout `out-performance-k6`)
 
 > **WebdriverIO** (out-e2e-webdriverIO) não está no pipeline devido à config de ambiente Android. Execução apenas local.
 
 ## Onde o pipeline está
 
-O arquivo `pipeline.yml` está em **out-test-pipeline**. Executa os testes:
+O arquivo `pipeline.yml` está em **out-test-pipeline**. Cada job faz checkout do repositório correspondente e executa:
 - API   - Integrated Test
 - E2E   - E2E Test
 - K6    - Performance Test
