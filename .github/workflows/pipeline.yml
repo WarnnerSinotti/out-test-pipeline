@@ -2,6 +2,17 @@ name: Pipeline Completo
 
 on:
   workflow_dispatch:
+    inputs:
+      k6_profile:
+        description: "Perfil de teste K6"
+        required: true
+        default: smoke
+        type: choice
+        options:
+          - smoke
+          - load
+          - spike
+          - soak
   push:
     branches: [main]
   pull_request:
@@ -9,6 +20,7 @@ on:
 
 env:
   REPO_ORG: ${{ github.repository_owner }}
+  K6_PROFILE: ${{ github.event.inputs.k6_profile || 'smoke' }}
 
 jobs:
   playwright-api:
@@ -124,7 +136,7 @@ jobs:
         working-directory: k6
         run: |
           npm ci || npm install
-          npm run test-smoke
+          npx cross-env K6_TEST_TYPE=${{ env.K6_PROFILE }} npm run test:k6
 
       - name: Upload relatório K6
         if: always()
