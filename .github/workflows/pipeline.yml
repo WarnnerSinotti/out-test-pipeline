@@ -1,6 +1,8 @@
 name: Pipeline Completo
 
 on:
+  schedule:
+    - cron: "0 13 * * *"
   workflow_dispatch:
     inputs:
       k6_profile:
